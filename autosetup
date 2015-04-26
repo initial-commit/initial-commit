@@ -1,0 +1,11 @@
+DRIVE1 /dev/sda
+DRIVE2 /dev/sdb
+SWRAID 0
+SWRAIDLEVEL 0
+BOOTLOADER grub
+HOSTNAME initial-commit
+PART swap swap 8G
+PART /boot ext4 512M
+PART / ext4 2048G
+PART /home ext4 all
+IMAGE /root/.oldroot/nfs/install/../images/Archlinux-2015-64-minmal.tar.gz
