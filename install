@@ -1,0 +1,62 @@
+#!/bin/zsh
+
+source variables.sh
+
+# Notes
+# -----
+# There are two categories of boxes:
+# - system-critical: root, git, analytics
+# - application-critical: www, judge
+#
+# The system boxes must be started here, while the application boxes are
+# started by git push into master
+#
+# Some boxes hook themselves to "cloud-wide" events by dropping in files for
+# system-ng (TODO: is it possible? research!)
+
+# sets up any "admin" users may be needed (for instance, for makepkg)
+source stages/bootstrap_admin_users.zsh
+# install management tools, monitoring tools, etc
+source stages/install_base_tools.zsh
+# fstab, sdb, etc
+source stages/setup_machine.zsh
+# install lxc
+source stages/install_lxc_tools.zsh
+# install basic services required for the "cloud" to work: syslog-ng, perhaps
+# HAProxy, etc - things relevant to the application
+# also configure iptables: nothing goes in from WAN except port 22, and that
+# only after port knocking; attacks are recorded (iptables -j LOG...), all
+# received packets are also logged - at least some basics
+source stages/install_box_root.zsh
+source stages/install_box_git.zsh
+source stages/install_box_analytics.zsh
+source stages/start_box_analytics.zsh
+# the previous stages have recorted (in syslog-ng compatible format) the
+# events, now replay them - they will get into mongodb
+source stages/replay_past_events.zsh
+# install and configure various boxes - all use archlinux for consistency
+# www box is accessible from outside, reachable through the secondary IP
+# address, configured via iptables
+# all packets are logged, at least the basics
+#
+# the next 2 lines are only temporary, for easier development; when everything
+# is in place, it all will be done through git
+source stages/install_box_www.zsh
+source stages/install_box_judge.zsh
+# once this is started, other boxes can be deployed
+source stages/start_box_git.zsh
+# the next line is only temporary, for easier development; when everything
+# is in place, it all will be done through git
+source stages/start_box_www.zsh
+# cleanup any leftover data, configuration, etc - the system should be in
+# a clean state
+source stages/cleanup.zsh
+# for now, this will do nothing, but in the end, it would push the boxes and
+# start them accordingly
+#
+# also, until now, iptables has blocked everything. Unlock the "cloud" after
+# a short warm-up phase
+source stages/enter_production.zsh
+# final notes: each box has its own repository, and the configuration is done
+# through various shell scripts, some of which are triggered by lxc when
+# certain events occur.

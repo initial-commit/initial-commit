@@ -9,6 +9,19 @@ echo "bootstrapping root"
 pacman-db-upgrade
 exit 0
 
+#TODO: basically the following, but nicer and version pacman.log too (and
+#anything which may seem important) as early in the process as possible.
+#nicer also means: use variables.sh
+#
+#the user root's environment is considered bootstrapped when its default shell
+#is zsh, and it has a clean directory cloned from initial-commit/root.git
+#
+#that repository will contain wrapper zsh functions for all common commands:
+#git commit every small change to /etc/, /root/, and so on.
+#
+#once this is done, it's time for ./install to be executed (which will use
+#those shell functions)
+
 pacman --no-configm -S git
 alias git=git --author "${USER_NAME} <${USER_EMAIL}>"
 
