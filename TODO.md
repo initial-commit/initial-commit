@@ -10,3 +10,4 @@
     in /media/data/
 * iptables -j LOG and deny any requests to the primary IP address
 * iptables - activate port knocking for the primary IP address
+* remove /tmp/bootstrap* at the end of the installation

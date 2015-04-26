@@ -8,6 +8,8 @@ alias unsecure_ssh="ssh ${_IGNORE_SECURITY} root@${BOXROOT_IP}"
 set -e
 set -x
 
+ssh-keygen -R ${BOXROOT_IP}
+
 scp -B ${_IGNORE_SECURITY} autosetup root@${BOXROOT_IP}:/autosetup
 
 unsecure_ssh "bash -ic installimage -f yes -d sda,sdb -n '${BOXROOT_HOSTNAME}' -a -c /autosetup"
