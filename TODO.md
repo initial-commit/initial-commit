@@ -8,3 +8,5 @@
 * automount sdb1 in /media/data/
   * feature to ease the development: also format if a magic file is available
     in /media/data/
+* iptables -j LOG and deny any requests to the primary IP address
+* iptables - activate port knocking for the primary IP address
