@@ -1,0 +1,19 @@
+#!/bin/zsh
+
+source variables.sh
+
+_IGNORE_SECURITY=(-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no)
+alias unsecure_ssh="ssh ${_IGNORE_SECURITY} root@${BOXROOT_IP}"
+
+set -e
+set -x
+
+scp -B ${_IGNORE_SECURITY} autosetup root@${BOXROOT_IP}:/autosetup
+
+unsecure_ssh "bash -ic installimage -f yes -d sda,sdb -n '${BOXROOT_HOSTNAME}' -a -c /autosetup"
+unsecure_ssh 'mkdir /mnt/sda3 && mount /dev/sda3 /mnt/sda3'
+unsecure_ssh 'rm /mnt/sda3/installimage.{debug,conf}' #TODO: maybe record it for later replay to analytics?
+unsecure_ssh 'mkdir /mnt/sda3/root/.ssh/ && chmod 700 /mnt/sda3/root/.ssh/'
+scp -B ${_IGNORE_SECURITY} authorized_keys root@${BOXROOT_IP}:/mnt/sda3/root/.ssh/authorized_keys
+unsecure_ssh 'chmod 644 /mnt/sda3/root/.ssh/authorized_keys'
+unsecure_ssh 'reboot'
