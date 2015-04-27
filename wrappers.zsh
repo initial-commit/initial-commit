@@ -12,3 +12,13 @@ function installpkg () {
     popd
 }
 
+# Initialise a git repository in a given directory.
+# Parameters: the directory where to init the repo.
+function start_versioning () {
+    pushd $1
+    git init
+    git add .
+    git commit -am "Initial commit"
+    popd
+}
+
