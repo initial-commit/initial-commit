@@ -22,21 +22,15 @@ exit 0
 #once this is done, it's time for ./install to be executed (which will use
 #those shell functions)
 
+source wrappers.zsh
+
 pacman --no-configm -S git
 alias git=git --author "${USER_NAME} <${USER_EMAIL}>"
 
-pushd /etc
-git init
-git add .
-git commit -am "Initial commit"
+start_versioning /etc
 
-pacman --no-confirm -S zsh
-git add .
-git commit -am "[INSTALL] zsh"
-
-pacman --no-confirm -S rxvt-unicode
-git add .
-git commit -am "[INSTALL] rxvt-unicode"
+installpkg zsh
+installpkg rxvt-unicode
 
 chsh -s /bin/zsh
 git add .
