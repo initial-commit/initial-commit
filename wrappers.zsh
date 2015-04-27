@@ -8,6 +8,9 @@ function installpkg () {
     if [[ $? == 0 ]]; then
         git add .
         git commit -am "[INSTALL] $1"
+        if [[ $? == 1 ]]; then
+            pacman --no-confirm -R $1
+        fi
     fi
     popd
 }
