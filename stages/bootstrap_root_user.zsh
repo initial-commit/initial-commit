@@ -38,7 +38,7 @@ set -x
 
 pacman-db-upgrade
 
-pacman --noconfigm -S git
+pacman --noconfirm -S git
 alias git=git --author "${BOXROOT_ROOT_NAME} <${BOXROOT_ROOT_EMAIL}>"
 
 start_versioning /etc
