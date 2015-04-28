@@ -2,56 +2,62 @@
 # are doing to the system. The only "next big thing" would have been to remaster
 # the ArchLinux .iso
 
+# Install a package and commit this to the repository in /etc.
+# Parameters: the package to be installed.
+function installpkg () {
+    pushd /etc
+    pacman --noconfirm -S "$1"
+    if [[ $? == 0 ]]; then
+        git add .
+        #TODO: check if anything is staged
+        git commit -m "[INSTALL] $1"
+        pushd /var/log
+        git add .
+        git commit -m "[INSTALL] $1"
+        popd
+        #TODO: write data to a syslog-ng file, which will be replayed back later
+    fi
+    popd
+}
+
+# Initialise a git repository in a given directory.
+# Parameters: the directory where to init the repo.
+function start_versioning () {
+    pushd "$1" > /dev/null
+    #TODO: special handling if there is already a repo
+    git init
+    git add .
+    git commit -m "Initial commit"
+    #TODO: write data to a syslog-ng file, which will be replayed back later
+    popd > /dev/null
+}
+
+
 set -e
 set -x
 
-echo "bootstrapping root"
 pacman-db-upgrade
-exit 0
 
-#TODO: basically the following, but nicer and version pacman.log too (and
-#anything which may seem important) as early in the process as possible.
-#nicer also means: use variables.sh
-#
-#the user root's environment is considered bootstrapped when its default shell
-#is zsh, and it has a clean directory cloned from initial-commit/root.git
-#
-#that repository will contain wrapper zsh functions for all common commands:
-#git commit every small change to /etc/, /root/, and so on.
-#
-#once this is done, it's time for ./install to be executed (which will use
-#those shell functions)
+pacman --noconfigm -S git
+alias git=git --author "${BOXROOT_ROOT_NAME} <${BOXROOT_ROOT_EMAIL}>"
 
-pacman --no-configm -S git
-alias git=git --author "${USER_NAME} <${USER_EMAIL}>"
+start_versioning /etc
+start_versioning /var/log
 
-pushd /etc
-git init
-git add .
-git commit -am "Initial commit"
+installpkg zsh
+installpkg rxvt-unicode
 
-pacman --no-confirm -S zsh
-git add .
-git commit -am "[INSTALL] zsh"
-
-pacman --no-confirm -S rxvt-unicode
-git add .
-git commit -am "[INSTALL] rxvt-unicode"
-
+pushd /etc > /dev/null
 chsh -s /bin/zsh
 git add .
 git commit -am "change default shell for root to zsh"
+popd > /dev/null
 
-popd
 find ! -name '.ssh' -exec rm -f {} +
 unalias git
-git config --global user.name root
-git config --global user.email root+root@initial-commit.org
-echo 'for file in $HOME/.zsh/*.zsh; do source "${file}"; done' > .zshrc
-mkdir .zsh/
-echo 'PATH=$HOME/bin:$PATH' > .zsh/10_path.zsh
-mkdir bin/
-git add -A .
-git commit -m "Initial commit"
-popd
-
+git config --global user.name "${BOXROOT_ROOT_NAME}"
+git config --global user.email "${BOXROOT_ROOT_EMAIL}"
+git init .
+git remote add origin https://github.com/initial-commit/root.git
+git fetch --all
+git checkout -t origin/master
