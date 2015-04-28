@@ -38,11 +38,12 @@ set -x
 
 pacman-db-upgrade
 
+find ! -path './.ssh*' ! -path . -exec rm -f {} \;
+
 pacman --noconfirm -S git
 git config --global user.name "${BOXROOT_ROOT_NAME}"
 git config --global user.email "${BOXROOT_ROOT_EMAIL}"
 
-find ! -name '.ssh' -exec rm -f {} +
 
 start_versioning /etc
 start_versioning /var/log
