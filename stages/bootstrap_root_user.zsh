@@ -39,7 +39,10 @@ set -x
 pacman-db-upgrade
 
 pacman --noconfirm -S git
-alias git=git --author "${BOXROOT_ROOT_NAME} <${BOXROOT_ROOT_EMAIL}>"
+git config --global user.name "${BOXROOT_ROOT_NAME}"
+git config --global user.email "${BOXROOT_ROOT_EMAIL}"
+
+find ! -name '.ssh' -exec rm -f {} +
 
 start_versioning /etc
 start_versioning /var/log
@@ -53,10 +56,6 @@ git add .
 git commit -am "change default shell for root to zsh"
 popd > /dev/null
 
-find ! -name '.ssh' -exec rm -f {} +
-unalias git
-git config --global user.name "${BOXROOT_ROOT_NAME}"
-git config --global user.email "${BOXROOT_ROOT_EMAIL}"
 git init .
 git remote add origin https://github.com/initial-commit/root.git
 git fetch --all
