@@ -2,36 +2,41 @@
 # are doing to the system. The only "next big thing" would have been to remaster
 # the ArchLinux .iso
 
+# Commit all changes in the current directory.
+# If there is no git repository initialised at destination or there is nothing
+# unstaged, exit silently.
+# Parameters: - the directory where to make the commit
+#             - the commit message
+function commit_all () {
+    pushd "$1" > /dev/null
+    if [[ -d './.git' && -z $(git status --porcelain) ]]; then
+        git add .
+        git commit -m "$2"
+    fi
+    popd > /dev/null
+}
+
 # Install a package and commit this to the repository in /etc.
 # Parameters: the package to be installed.
 function installpkg () {
-    pushd /etc
     pacman --noconfirm -S "$1"
-    if [[ $? == 0 ]]; then
-        git add .
-        #TODO: check if anything is staged
-        git commit -m "[INSTALL] $1"
-        pushd /var/log
-        git add .
-        git commit -m "[INSTALL] $1"
-        popd
-        #TODO: write data to a syslog-ng file, which will be replayed back later
-    fi
-    popd
+    commit_all "/etc" "[INSTALL] $1"
+    commit_all "/var/log" "[INSTALL] $1"
+    #TODO: write data to a syslog-ng file, which will be replayed back later
 }
 
 # Initialise a git repository in a given directory.
 # Parameters: the directory where to init the repo.
 function start_versioning () {
     pushd "$1" > /dev/null
-    #TODO: special handling if there is already a repo
-    git init
-    git add .
-    git commit -m "Initial commit"
+    if [[ !( -d './.git') ]]; then
+        git init
+        git add . > /dev/null
+        git commit -m "Initial commit"
+    fi
     #TODO: write data to a syslog-ng file, which will be replayed back later
     popd > /dev/null
 }
-
 
 set -e
 set -x
