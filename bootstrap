@@ -5,8 +5,8 @@ source variables.sh
 set -e
 set -x
 
-ssh-keyscan -t rsa ${BOXROOT_IP} >> ~/.ssh/known_hosts
+ssh-keyscan -t rsa ${BOXROOT_FQDN} >> ~/.ssh/known_hosts
 
 source stages/upload_self.zsh
 # stages/bootstrap_root_user.zsh
-ssh root@${BOXROOT_IP} '/bin/bash /tmp/bootstrap/stages/bootstrap_root_user.zsh'
+ssh root@${BOXROOT_FQDN} '/bin/bash /tmp/bootstrap/stages/bootstrap_root_user.zsh'
