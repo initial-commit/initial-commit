@@ -10,8 +10,9 @@
 function commit_all () {
     pushd "$1" > /dev/null
     if [[ -d './.git' && ! -z $(git status --porcelain) ]]; then
-        git add -A .
-        git commit -m "$2"
+        git add -A . > /dev/null
+        echo "commit in '$1': '$2'"
+        git commit -m "$2" > /dev/null
     fi
     popd > /dev/null
 }
@@ -20,8 +21,10 @@ function commit_all () {
 # Parameters: the package to be installed.
 function installpkg () {
     if ! (pacman -Q "$1" &>/dev/null); then
-        pacman --noconfirm -S "$1"
+        echo "INSTALL: '$1'"
+        pacman --noconfirm -S "$1" > /dev/null
     fi
+    #TODO: we don't need .pacsave, .OLD, & co, git records it all
     commit_all "/etc" "[INSTALL] $1"
     commit_all "/var/log" "[INSTALL] $1"
     #TODO: write data to a syslog-ng file, which will be replayed back later
