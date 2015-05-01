@@ -2,7 +2,7 @@
 BOXROOT_IP=
 
 APPDOMAIN=initial-commit.org
-BOXROOT_HOSTNAME=initial-commit
+BOXROOT_FQDN=root.initial-commit.org
 
 BOXROOT_LOGICAL_NAME=root
 
