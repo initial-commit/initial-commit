@@ -58,7 +58,6 @@ start_versioning /var/log
 installpkg git
 
 installpkg zsh
-installpkg rxvt-unicode
 
 pushd /etc > /dev/null
 chsh -s /bin/zsh
