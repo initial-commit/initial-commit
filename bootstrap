@@ -8,5 +8,5 @@ set -x
 ssh-keyscan -t rsa ${BOXROOT_FQDN} >> ~/.ssh/known_hosts
 
 source stages/upload_self.zsh
-# stages/bootstrap_root_user.zsh
 ssh root@${BOXROOT_FQDN} '/bin/bash /tmp/bootstrap/stages/bootstrap_root_user.zsh'
+ssh root@${BOXROOT_FQDN} 'rm -rf /tmp/bootstrap*'
