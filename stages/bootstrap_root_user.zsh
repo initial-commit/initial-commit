@@ -9,7 +9,7 @@
 #             - the commit message
 function commit_all () {
     pushd "$1" > /dev/null
-    if [[ -d './.git' && -z $(git status --porcelain) ]]; then
+    if [[ -d './.git' && ! -z $(git status --porcelain) ]]; then
         git add .
         git commit -m "$2"
     fi
