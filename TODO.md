@@ -10,3 +10,4 @@
     in /media/data/
 * iptables -j LOG and deny any requests to the primary IP address
 * iptables - activate port knocking for the primary IP address
+* functions to manage -e/+e and -x/+x state
