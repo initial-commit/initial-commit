@@ -1,3 +1,4 @@
+* send X when asked to by installimage, to cut execution time (use expect)
 * install git in order to version the system's configuration; directories and
   files to be versioned:
   * /etc/
