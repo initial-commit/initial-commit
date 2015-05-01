@@ -3,7 +3,6 @@
 source variables.sh
 
 set -e
-set -x
 
 # Notes
 # -----
