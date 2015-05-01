@@ -2,6 +2,9 @@
 
 source variables.sh
 
+set -e
+set -x
+
 # Notes
 # -----
 # There are two categories of boxes:
@@ -15,7 +18,7 @@ source variables.sh
 # system-ng (TODO: is it possible? research!)
 
 # sets up any "admin" users may be needed (for instance, for makepkg)
-source stages/bootstrap_admin_users.zsh
+source stages/bootstrap_admin_infrastructure.zsh
 # install management tools, monitoring tools, etc
 source stages/install_base_tools.zsh
 # fstab, sdb, etc
