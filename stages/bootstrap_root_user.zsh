@@ -37,7 +37,7 @@ function start_versioning () {
     if [[ !( -d './.git') ]]; then
         git init
         git add . > /dev/null
-        git commit -m "Initial commit"
+        git commit -m "Initial commit" > /dev/null
     fi
     #TODO: write data to a syslog-ng file, which will be replayed back later
     popd > /dev/null
