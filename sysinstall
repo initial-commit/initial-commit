@@ -9,6 +9,8 @@ set -e
 set -x
 
 ssh-keygen -R ${BOXROOT_FQDN}
+local boxroot_ip=`dig +short ${BOXROOT_FQDN}`
+ssh-keygen -R ${boxroot_ip}
 
 scp -B ${_IGNORE_SECURITY} autosetup root@${BOXROOT_FQDN}:/autosetup
 
@@ -20,5 +22,3 @@ scp -B ${_IGNORE_SECURITY} authorized_keys root@${BOXROOT_FQDN}:/mnt/sda3/root/.
 unsecure_ssh 'chmod 644 /mnt/sda3/root/.ssh/authorized_keys'
 unsecure_ssh "echo '${BOXROOT_FQDN}' > /mnt/sda3/etc/hostname"
 unsecure_ssh 'reboot'
-
-ssh-keygen -R ${BOXROOT_FQDN}
