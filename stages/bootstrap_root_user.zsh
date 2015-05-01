@@ -19,7 +19,9 @@ function commit_all () {
 # Install a package and commit this to the repository in /etc.
 # Parameters: the package to be installed.
 function installpkg () {
-    pacman --noconfirm -S "$1"
+    if ! (pacman -Q "$1" &>/dev/null); then
+        pacman --noconfirm -S "$1"
+    fi
     commit_all "/etc" "[INSTALL] $1"
     commit_all "/var/log" "[INSTALL] $1"
     #TODO: write data to a syslog-ng file, which will be replayed back later
@@ -48,10 +50,9 @@ find ! -path './.ssh*' ! -path . -exec rm -f {} \;
 pacman --noconfirm -S git
 git config --global user.name "${BOXROOT_ROOT_NAME}"
 git config --global user.email "${BOXROOT_ROOT_EMAIL}"
-
-
 start_versioning /etc
 start_versioning /var/log
+installpkg git
 
 installpkg zsh
 installpkg rxvt-unicode
