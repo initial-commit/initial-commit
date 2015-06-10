@@ -2,7 +2,7 @@
 BOXROOT_FQDN=
 # Add the sequence of ports to be knocked in order to gain access.
 # The ports must be separated by a space.
-KNOCK_SEQUENCE=""
+BOXROOT_KNOCK_SEQUENCE=""
 
 # TODO: For multiple admins, create arrays
 BOXROOT_ADMIN_USERNAME=flav
